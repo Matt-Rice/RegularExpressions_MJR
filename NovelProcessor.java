@@ -19,62 +19,77 @@ public class NovelProcessor {
     private static BufferedReader regReader;
     private static PrintWriter outWriter;
     
+    /**
+     * Constructor for this class. It is not used in execution
+     */
     public NovelProcessor(){
-    }
+    }//end NovelProcessor
 
+    /**
+     * Method that will read a .txt file and output a HashMap with the keys being a regex pattern and the values being their occurrences throughout the text
+     * @param bookFile the text to be scanned
+     * @param regFile the file containing the regex patterns
+     * @return a HashMap that contains the regex patterns and their corresponding occurrences throughout the text
+     */
     public static HashMap <String, Integer> processNovel(String bookFile, String regFile){
         String line = "";
         HashMap <String, Integer> wordCount = new HashMap<String,Integer>();
+
         try{
             bookReader = new BufferedReader(new FileReader(bookFile));
             regReader = new BufferedReader(new FileReader(regFile));
-            StringBuilder reg = new StringBuilder();
             
+            // Reads each line in the regex file and puts the pattern as the key and 0 as the value
             while ((line = regReader.readLine()) != null){
-                
-                reg.append(line.trim()).append("|");
-            }
-            reg.deleteCharAt(reg.length()-1);
-
-            String regString = reg.toString();
-            System.out.println(regString);
-            Pattern pattern = Pattern.compile(regString, Pattern.CASE_INSENSITIVE);
-
+                wordCount.put(line.trim(), 0);
+            }//end while
+            
+            // Outer while that will read each line of the book and count the occurrences of each pattern
             while((line = bookReader.readLine()) != null){
-                Matcher matcher= pattern.matcher(line);
 
-                while(matcher.find()){
-                    String word = matcher.group().toLowerCase();
-                    wordCount.put(word, wordCount.getOrDefault(word, 0)+1);
-                }
-            }
+                for(String regString : wordCount.keySet()){
+                    Pattern pattern = Pattern.compile(regString, Pattern.CASE_INSENSITIVE);
+                    Matcher matcher= pattern.matcher(line);
+
+                    while(matcher.find()){
+                        wordCount.put(regString, wordCount.get(regString)+1);
+                    }//while
+                }//for
+            }//while
            
-        }
+        }//try
+
         catch (IOException e){
             System.out.println("File not Found");
-        }
-        return wordCount;
-    }
+        }//catch
 
+        return wordCount;
+    }//end processNovel
+
+    /**
+     * Ouputs the key value pairs into a .txt file and adds _wc to the end of the file name
+     * @param map
+     * @param outputFileName
+     */
     public static void outputFile(HashMap<String,Integer> map, String outputFileName){
         try{
             
             outWriter = new PrintWriter(new FileWriter(outputFileName.replaceAll(".txt","_wc.txt")));
-            for(HashMap.Entry<String, Integer> entry : map.entrySet()){
-           
+            
+            for(HashMap.Entry<String, Integer> entry : map.entrySet()){           
                 outWriter.println(entry.getKey() + " | " + entry.getValue());
-            }
+            }//for
           
             outWriter.close();
-        }
+        }//try
+
         catch(IOException e){
             e.printStackTrace();
-        }
-        
-    }
+        }//catch        
+    }//end outputFile
     
 
-
+    // Main method that will prompt the user to enter the .txt file to be searched and the file that contains the regex patterns and will call the method to process the novel and output the word count file
     public static void main(String[]args){
 
         Scanner scan = new Scanner(System.in);
@@ -88,17 +103,8 @@ public class NovelProcessor {
 
         outputFile(wordCount, bookFile);
 
-
-
         scan.close();
 
+    }//end main
 
-
-    }
-
-    
-    
-
-
-
-}
+}//end NovelProcessor

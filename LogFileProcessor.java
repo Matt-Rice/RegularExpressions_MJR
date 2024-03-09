@@ -1,3 +1,11 @@
+/**
+ * Reads a Unix log file (provided by user as the first argument) and creates HashMaps one with each unique IP address and the number of times it occurs and another with unique usernames and their occurrences and if the second argument is 1, it prints the IP map, 2 prints the username map and any other number will print only the default
+ * @author Matt Rice
+ * @version 1.0
+ * Assignment 4
+ * CS 322 - Compiler Construction
+ * Spring 2024
+ */
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,11 +15,17 @@ public class LogFileProcessor {
 
     private static int lineCount;
 
+    /**
+     * Processes a file and creates and returns a HashMap with the unique IP Addresses and the number of times they occur
+     * @param fileName the name of the file to be processed
+     * @return a HashMap with each unique IP followed by the number of times they occur
+     */
     public static HashMap<String,Integer> processIP(String fileName){
         HashMap<String, Integer> occurrences = new HashMap<String,Integer>();
         String ip = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
         String line;
         lineCount = 0;
+        
         Pattern pattern = Pattern.compile(ip);
         try{
             BufferedReader read = new BufferedReader(new FileReader(fileName));
@@ -26,16 +40,21 @@ public class LogFileProcessor {
                         occurrences.put(match, 0);
                     }
                     occurrences.put(match, occurrences.get(match)+1);
-                }
-            }
+                }//while
+            }//while
             read.close();
-        }
+        }//try
         catch(IOException e){
             e.printStackTrace();
-        }
+        }//catch
         return occurrences;
-    }
+    }//end processIP
 
+    /**
+     * Processes a file and creates and returns a HashMap with the unique usernames and the number of times they occur
+     * @param fileName the name of the file to be processed
+     * @return a HashMap with each unique username followed by the number of times they occur
+     */
     public static HashMap<String,Integer> processUsers(String fileName){
         HashMap<String, Integer> occurrences = new HashMap<String,Integer>();
         String userPattern = "user\\s[a-z]+";
@@ -54,20 +73,29 @@ public class LogFileProcessor {
                         occurrences.put(username, 0);
                     }
                     occurrences.put(username, occurrences.get(username)+1);
-                }
-            }
+                }//while
+            }//while
             read.close();
-        }
+        }//try
         catch(IOException e){
             e.printStackTrace();
-        }
+        }//catch
         return occurrences;
-    }
+    }//end processUsers
 
+    /**
+     * Returns the size of a given HashMap
+     * @param map the HashMap thats size will be returned
+     * @return the size of the HashMap
+     */
     public static int size(HashMap<String,Integer> map){
         return map.size();
-    }
+    }//end size
 
+    /**
+     * Prints a Hashmap
+     * @param map
+     */
     public static void printHashMap(HashMap<String,Integer> map){
         for(HashMap.Entry<String,Integer> entry: map.entrySet()){
             System.out.println(entry.getKey() + ": " + entry.getValue());
@@ -104,6 +132,6 @@ public class LogFileProcessor {
 
 
 
-    }
+    }//end main
 
-}
+}//end LogFileProcessor

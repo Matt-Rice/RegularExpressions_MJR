@@ -1,8 +1,10 @@
 /**
- * @author Matt Rice
- * @version 3-8-24
- * WordCounter.java
  * Creates a hashmap and goes through each word count file to output the total occurrences of each pattern throughout each book
+ * @author Matt Rice
+ * @version 1.0
+ * Assignment 4
+ * CS 322 - Compiler Construction
+ * Spring 2024
  */
 import java.io.*;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ public class WordCounter {
     public static void main(String[] args) {
         
         if(args.length != 1){
-            System.out.println("In order to run this code, please enter the path to the current directory");
+            System.out.println("In order to run this code, please enter the path to the current working directory");
             return;
         }
         
@@ -71,8 +73,5 @@ public class WordCounter {
             e.printStackTrace();;
         }
 
-
-
-
-    }
-}
+    }//end main
+}//end WordCounter

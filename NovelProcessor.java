@@ -77,7 +77,7 @@ public class NovelProcessor {
             outWriter = new PrintWriter(new FileWriter(outputFileName.replaceAll(".txt","_wc.txt")));
             
             for(HashMap.Entry<String, Integer> entry : map.entrySet()){           
-                outWriter.println(entry.getKey() + " | " + entry.getValue());
+                outWriter.println(entry.getKey() + "|" + entry.getValue());
             }//for
           
             outWriter.close();

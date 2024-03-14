@@ -1,10 +1,12 @@
 /**
- * @author Matt Rice
- * @version 3-5-24
- * NovelProcessor.java
- * Program that accepts two inputs from the user, a .txt file corresponding to a book and another .txt file that contains a series of regex expressions
+ *  * Program that accepts two inputs from the user, a .txt file corresponding to a book and another .txt file that contains a series of regex expressions
  * that correspond to these words and their variations: Gloomy, Haunting, Mysterious, Foreboding, Melancholic, Terror, and Desolate
  * The program will count the number of instances of each of these and print them to an output file.
+ * @author Matt Rice
+ * @version 1.0
+ * Assignment 4
+ * CS 322 - Compiler Construction
+ * Spring 2024
  */
 
 import java.io.*;
@@ -60,7 +62,7 @@ public class NovelProcessor {
         }//try
 
         catch (IOException e){
-            System.out.println("File not Found");
+            e.printStackTrace();;
         }//catch
 
         return wordCount;

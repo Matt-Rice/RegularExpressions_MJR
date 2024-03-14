@@ -15,8 +15,6 @@ public class WordCounter {
             return;
         }
         
-        //OR: String directoryPath = System.getProperty("user.dir");
-        
         String directoryPath = args[0];
 
         HashMap<String,Integer> totalCount = new HashMap<String,Integer>();

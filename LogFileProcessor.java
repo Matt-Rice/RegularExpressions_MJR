@@ -10,72 +10,71 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class LogFileProcessor {
 
     private static int lineCount;
 
     /**
-     * Processes a file and creates and returns a HashMap with the unique IP Addresses and the number of times they occur
+     * Processes a file and creates and returns an ArrayList of HashMaps with the unique usernames and IPs and the number of times they occur
      * @param fileName the name of the file to be processed
-     * @return a HashMap with each unique IP followed by the number of times they occur
+     * @return an ArrayList of HashMaps with index zero containing unique usernames followed by the number of times they occur and index one with the IP addresses
      */
-    public static HashMap<String,Integer> processIP(String fileName){
-        HashMap<String, Integer> occurrences = new HashMap<String,Integer>();
-        String ip = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-        String line;
-        lineCount = 0;
+    public static ArrayList<HashMap<String,Integer>> processMaps(String fileName){
         
-        Pattern pattern = Pattern.compile(ip);
-        try{
-            BufferedReader read = new BufferedReader(new FileReader(fileName));
+        ArrayList<HashMap<String, Integer>> occurrences = new ArrayList<HashMap<String, Integer>>();
 
-            while((line = read.readLine()) != null){
-                Matcher matcher= pattern.matcher(line);
-                lineCount++;
-                while(matcher.find()){
-                    String match = matcher.group();
+        occurrences.add(new HashMap<String,Integer>());
+        occurrences.add(new HashMap<String, Integer>());
 
-                    if(!occurrences.containsKey(match)){
-                        occurrences.put(match, 0);
-                    }
-                    occurrences.put(match, occurrences.get(match)+1);
-                }//while
-            }//while
-            read.close();
-        }//try
-        catch(IOException e){
-            e.printStackTrace();
-        }//catch
-        return occurrences;
-    }//end processIP
-
-    /**
-     * Processes a file and creates and returns a HashMap with the unique usernames and the number of times they occur
-     * @param fileName the name of the file to be processed
-     * @return a HashMap with each unique username followed by the number of times they occur
-     */
-    public static HashMap<String,Integer> processUsers(String fileName){
-        HashMap<String, Integer> occurrences = new HashMap<String,Integer>();
-        String userPattern = "user\\s[a-z]+";
+        String user = "user\\s[a-z]+";
+        String ip = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
+        
         String line;
-        Pattern pattern = Pattern.compile(userPattern);
+        
+        Pattern usrPattern = Pattern.compile(user);
+        Pattern ipPattern = Pattern.compile(ip);
+        
+        lineCount = 0;
+
         try{
+
             BufferedReader read = new BufferedReader(new FileReader(fileName));
 
             while((line = read.readLine()) != null){
-                Matcher matcher= pattern.matcher(line);
-
-                while(matcher.find()){
-                    String[] match = matcher.group().split(" ");
+                Matcher usrMatcher = usrPattern.matcher(line);
+                Matcher ipMatcher = ipPattern.matcher(line);
+               
+                lineCount++;
+                // Username find
+                while(usrMatcher.find()){
+                    String[] match = usrMatcher.group().split(" "); //match [0] is user as specified by the pattern
                     String username = match[1];
-                    if(!occurrences.containsKey(username)){
-                        occurrences.put(username, 0);
+                   
+                    //If it isn't in the map yet, put 0
+                    if(!occurrences.get(0).containsKey(username)){
+                        occurrences.get(0).put(username, 0);
                     }
-                    occurrences.put(username, occurrences.get(username)+1);
+
+                    occurrences.get(0).put(username, occurrences.get(0).get(username)+1);
+                }//while
+
+                //IP find
+                while(ipMatcher.find()){
+                    String IP = ipMatcher.group();
+                    
+                    //If it isn't in the map yet, put 0
+                    if(!occurrences.get(1).containsKey(IP)){
+                        occurrences.get(1).put(IP, 0);
+                    }
+                   
+                    occurrences.get(1).put(IP, occurrences.get(1).get(IP)+1);
                 }//while
             }//while
+        
             read.close();
+        
         }//try
         catch(IOException e){
             e.printStackTrace();
@@ -100,10 +99,11 @@ public class LogFileProcessor {
         for(HashMap.Entry<String,Integer> entry: map.entrySet()){
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }//for
-    }
+    }//end printHashMap
+
     public static void main(String[] args) {
         if(args.length != 2 ){
-            System.out.println("When running the file, please include two argument, first, the file name to be processed, second either 0 to print the default output, 1 to print the IP addresses and the default, or 2 for the usernames and default output");
+            System.out.println("When running the file, please include two arguments, first, the file name to be processed, second either 0 to print the default output, 1 to print the IP addresses and the default, or 2 for the usernames and default output");
             return;
         }
         
@@ -116,8 +116,10 @@ public class LogFileProcessor {
 
         int printChoice = Integer.parseInt(args[1]);
 
-        HashMap<String,Integer> ipMap = processIP(logFile.getName());
-        HashMap<String,Integer> usrMap = processUsers(logFile.getName());
+        ArrayList<HashMap<String,Integer>> ocMaps = processMaps(logFile.getName());
+        
+        HashMap<String,Integer> ipMap = ocMaps.get(1);
+        HashMap<String,Integer> usrMap = ocMaps.get(0);
 
         if(printChoice == 1){
             printHashMap(ipMap);

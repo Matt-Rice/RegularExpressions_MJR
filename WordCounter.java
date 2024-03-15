@@ -11,13 +11,8 @@ import java.util.HashMap;
 
 public class WordCounter {
     public static void main(String[] args) {
-        
-        if(args.length != 1){
-            System.out.println("In order to run this code, please enter the path to the current working directory");
-            return;
-        }
-        
-        String directoryPath = args[0];
+          
+        String directoryPath = System.getProperty("user.dir");
 
         HashMap<String,Integer> totalCount = new HashMap<String,Integer>();
 
@@ -39,8 +34,8 @@ public class WordCounter {
                     
                     while((line = read.readLine()) != null){
                         int index = line.lastIndexOf("|");
-
-                        String pattern = line.substring(0, index-1);
+                       
+                        String pattern = line.substring(0, index);
                         int count = Integer.parseInt(line.substring(index+1));
 
                         if (!totalCount.containsKey(pattern)){
